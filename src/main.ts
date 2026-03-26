@@ -7,7 +7,7 @@ import type { ArtifactSettings } from './types';
 import { CODE_BLOCK_LANGUAGE, DEFAULT_SETTINGS } from './constants';
 import { ArtifactSettingTab } from './settings';
 import { ThemeManager } from './theme';
-import { createArtifactContainer, DebouncedRenderer } from './renderer';
+import { createArtifactContainer } from './renderer';
 
 export default class ArtifactPlugin extends Plugin {
   settings: ArtifactSettings = { ...DEFAULT_SETTINGS };
@@ -61,10 +61,12 @@ export default class ArtifactPlugin extends Plugin {
     this.addSettingTab(new ArtifactSettingTab(this.app, this));
 
     // First install notice
-    new Notice(
-      'Obsidian Artifacts loaded! Try: ```html-render in any note.',
-      8000
-    );
+    if (this.isFirstLoad) {
+      new Notice(
+        'Obsidian Artifacts installed! Try: ```html-render in any note.',
+        8000
+      );
+    }
   }
 
   onunload(): void {
@@ -72,8 +74,11 @@ export default class ArtifactPlugin extends Plugin {
     this.themeManager = null;
   }
 
+  private isFirstLoad = false;
+
   async loadSettings(): Promise<void> {
     const data = await this.loadData();
+    this.isFirstLoad = data == null;
     this.settings = { ...DEFAULT_SETTINGS, ...data };
   }
 
