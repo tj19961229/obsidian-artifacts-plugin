@@ -1,0 +1,9 @@
+{
+  "id": "obsidian-artifacts",
+  "name": "Obsidian Artifacts",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0",
+  "description": "Render interactive HTML, CSS, and JS content directly in your notes via html-render code blocks.",
+  "author": "tj",
+  "isDesktopOnly": true
+}
