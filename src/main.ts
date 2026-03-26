@@ -7,12 +7,14 @@ import type { ArtifactSettings } from './types';
 import { CODE_BLOCK_LANGUAGE, DEFAULT_SETTINGS } from './constants';
 import { ArtifactSettingTab } from './settings';
 import { ThemeManager } from './theme';
-import { createArtifactContainer } from './renderer';
+import { createArtifactContainer, DebouncedRenderer } from './renderer';
+import { computeContentHash } from './srcdoc-builder';
 
 export default class ArtifactPlugin extends Plugin {
   settings: ArtifactSettings = { ...DEFAULT_SETTINGS };
   private themeManager: ThemeManager | null = null;
   private activeIframeCount = 0;
+  private readonly lastRenderHash = new Map<HTMLElement, number>();
 
   async onload(): Promise<void> {
     await this.loadSettings();
@@ -95,6 +97,16 @@ export default class ArtifactPlugin extends Plugin {
       return;
     }
 
+    // Content hash deduplication: skip re-render if content unchanged (Live Preview re-triggers)
+    const hash = computeContentHash(source);
+    const parentEl = el.parentElement;
+    if (parentEl && this.lastRenderHash.get(parentEl) === hash) {
+      return;
+    }
+    if (parentEl) {
+      this.lastRenderHash.set(parentEl, hash);
+    }
+
     const result = createArtifactContainer(
       source,
       el,
@@ -111,6 +123,9 @@ export default class ArtifactPlugin extends Plugin {
       result.destroy();
       if (result.iframe) {
         this.activeIframeCount--;
+      }
+      if (parentEl) {
+        this.lastRenderHash.delete(parentEl);
       }
     });
   }
