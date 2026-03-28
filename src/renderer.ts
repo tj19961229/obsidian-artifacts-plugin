@@ -2,7 +2,7 @@
  * @author tj
  */
 
-import { buildSrcdoc, computeContentHash } from './srcdoc-builder';
+import { buildSrcdoc } from './srcdoc-builder';
 import { ThemeManager } from './theme';
 import type { ArtifactSettings, ArtifactMessage } from './types';
 import {
@@ -10,52 +10,6 @@ import {
   UNRESPONSIVE_TIMEOUT_MS,
   MIN_IFRAME_HEIGHT,
 } from './constants';
-
-export class DebouncedRenderer {
-  private readonly renderFn: (content: string) => void;
-  private readonly delay: number;
-  private timer: ReturnType<typeof setTimeout> | null = null;
-  private lastHash: number | null = null;
-
-  constructor(renderFn: (content: string) => void, delay: number) {
-    this.renderFn = renderFn;
-    this.delay = delay;
-  }
-
-  schedule(content: string): void {
-    const hash = computeContentHash(content);
-    if (hash === this.lastHash) {
-      return;
-    }
-
-    if (this.timer !== null) {
-      clearTimeout(this.timer);
-    }
-
-    this.timer = setTimeout(() => {
-      this.lastHash = hash;
-      this.renderFn(content);
-      this.timer = null;
-    }, this.delay);
-  }
-
-  cancel(): void {
-    if (this.timer !== null) {
-      clearTimeout(this.timer);
-      this.timer = null;
-    }
-  }
-}
-
-export function setEditingState(
-  container: HTMLElement,
-  editing: boolean
-): void {
-  const watermark = container.querySelector('.artifact-editing-watermark');
-  if (watermark instanceof HTMLElement) {
-    watermark.style.display = editing ? 'block' : 'none';
-  }
-}
 
 export function createArtifactContainer(
   source: string,
@@ -121,11 +75,6 @@ function renderIframe(
   const reloadBtn = container.createDiv({ cls: 'artifact-reload' });
   reloadBtn.setText('↻');
   reloadBtn.setAttribute('aria-label', 'Reload artifact');
-
-  // Editing watermark
-  const watermark = container.createDiv({ cls: 'artifact-editing-watermark' });
-  watermark.setText('editing...');
-  watermark.style.display = 'none';
 
   const iframe = document.createElement('iframe');
   iframe.classList.add('artifact-iframe');

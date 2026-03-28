@@ -20,8 +20,7 @@ function buildThemeStyles(theme: Record<string, string>): string {
   return `:root {\n${vars}\n}`;
 }
 
-function buildInjectedScripts(): string {
-  return `
+const INJECTED_SCRIPTS = `
 <script>
 (function() {
   // --- Resize Observer with throttle ---
@@ -121,7 +120,6 @@ function buildInjectedScripts(): string {
   }, '*');
 })();
 </script>`;
-}
 
 export function buildSrcdoc(
   userContent: string,
@@ -149,7 +147,7 @@ html, body {
 </head>
 <body>
 ${userContent}
-${buildInjectedScripts()}
+${INJECTED_SCRIPTS}
 </body>
 </html>`;
 }

@@ -8,7 +8,6 @@ export const CODE_BLOCK_LANGUAGE = 'html-render';
 
 export const DEFAULT_SETTINGS: ArtifactSettings = {
   maxHeight: 800,
-  debounceDelay: 800,
   maxActiveIframes: 5,
 };
 
@@ -38,4 +37,3 @@ export const MESSAGE_TYPES = {
 export const UNRESPONSIVE_TIMEOUT_MS = 5000;
 export const MIN_IFRAME_HEIGHT = 60;
 export const RESIZE_THROTTLE_MS = 100;
-export const POSTMESSAGE_RATE_LIMIT_MS = 50;

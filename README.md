@@ -33,7 +33,7 @@ Switch to **Reading View** or **Live Preview** — the code block renders as an 
 - **CSP protection** — Content Security Policy blocks all external network requests (v1). External resource support planned for v1.1.
 - **Lazy loading** — Notes with many code blocks use IntersectionObserver to activate iframes on scroll.
 - **Accessibility** — Keyboard navigable, focus indicators, `prefers-reduced-motion` support.
-- **Settings** — Configurable max height, debounce delay, and active iframe limit.
+- **Settings** — Configurable max height and active iframe limit.
 
 ## Commands
 
@@ -80,9 +80,44 @@ var(--font-monospace)
 
 ## Development
 
+### Prerequisites
+
+- Node.js 18+
+- npm
+
+### Build from Source
+
 ```bash
+git clone https://github.com/tj19961229/obsidian-artifacts-plugin.git
+cd obsidian-artifacts-plugin
 npm install
-npm run dev    # Watch mode
-npm run build  # Production build
-npm test       # Run tests
+npm run build  # Type-check + production bundle
+```
+
+This produces three files in the project root: `main.js`, `manifest.json`, `styles.css`.
+
+### Load into Obsidian
+
+1. Find your Obsidian vault path (e.g. `~/Documents/MyVault`)
+2. Copy the build artifacts into the plugin directory:
+
+```bash
+# Create plugin folder if it doesn't exist
+mkdir -p /path/to/vault/.obsidian/plugins/obsidian-artifacts
+
+# Copy build output
+cp main.js manifest.json styles.css /path/to/vault/.obsidian/plugins/obsidian-artifacts/
+```
+
+3. In Obsidian, go to **Settings → Community Plugins → Installed plugins**, find "Obsidian Artifacts" and enable it.
+4. If Obsidian was already open, reload the app (**Ctrl/Cmd + P** → "Reload app without saving") to pick up the new files.
+
+> **Note:** Do not use symlinks — Obsidian may not detect plugin updates from symlinked files. Always copy.
+
+### Dev Commands
+
+```bash
+npm run dev    # Watch mode (auto-rebuild on save)
+npm run build  # Production build (with type-check)
+npm test       # Run tests (vitest)
 ```

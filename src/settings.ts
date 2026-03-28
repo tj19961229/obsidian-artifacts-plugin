@@ -44,23 +44,6 @@ export class ArtifactSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName('Debounce delay')
-      .setDesc('Delay in ms before re-rendering after editing in Live Preview mode (300-2000ms).')
-      .addSlider((slider) =>
-        slider
-          .setLimits(300, 2000, 100)
-          .setValue(this.plugin.settings.debounceDelay)
-          .setDynamicTooltip()
-          .onChange(async (value) => {
-            this.plugin.settings = {
-              ...this.plugin.settings,
-              debounceDelay: value,
-            };
-            await this.plugin.saveSettings();
-          })
-      );
-
-    new Setting(containerEl)
       .setName('Max active iframes')
       .setDesc('Maximum number of active iframes per note. Additional blocks are lazy-loaded on scroll.')
       .addSlider((slider) =>

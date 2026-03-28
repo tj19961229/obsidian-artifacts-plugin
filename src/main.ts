@@ -7,13 +7,14 @@ import type { ArtifactSettings } from './types';
 import { CODE_BLOCK_LANGUAGE, DEFAULT_SETTINGS } from './constants';
 import { ArtifactSettingTab } from './settings';
 import { ThemeManager } from './theme';
-import { createArtifactContainer, DebouncedRenderer } from './renderer';
+import { createArtifactContainer } from './renderer';
 import { computeContentHash } from './srcdoc-builder';
 
 export default class ArtifactPlugin extends Plugin {
   settings: ArtifactSettings = { ...DEFAULT_SETTINGS };
   private themeManager: ThemeManager | null = null;
   private activeIframeCount = 0;
+  private isFirstLoad = false;
   private readonly lastRenderHash = new Map<HTMLElement, number>();
 
   async onload(): Promise<void> {
@@ -75,8 +76,6 @@ export default class ArtifactPlugin extends Plugin {
     this.themeManager?.destroy();
     this.themeManager = null;
   }
-
-  private isFirstLoad = false;
 
   async loadSettings(): Promise<void> {
     const data = await this.loadData();
