@@ -1,0 +1,16 @@
+# build output
+main.js
+
+# npm
+node_modules
+
+# IDE
+.idea/
+*.code-workspace
+
+# env
+.env
+.DS_Store
+
+# test coverage
+coverage/
